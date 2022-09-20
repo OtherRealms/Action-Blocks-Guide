@@ -54,14 +54,14 @@ Action Node
 **Root Motion**, Apply root motion to and from this Action.
 
 Spacer Node
-===============
+===========
 
 **Duration** , Add empty space between blocks and interpolate between them. Duration in frames.
 
 **Interpolation** , Blending between between blocks. 'Linear' and 'Bezier' convert the last keyframe curve. 'Hold' adds an extra hold frame before the next block.
 
 Mix Node
-===============
+========
 
 **Modes** 
 
@@ -72,6 +72,18 @@ Mix Node
 * **Extend**  ,Add input2 to the end of input1
 
 **Use Range** , The frame range for mix to take affect.
+
+Spacer Node
+============
+The Spacer Node can be used to add extra time, before, between or after blocks. Using a spacer between blocks can function like a blended transition.
+
+* **Duration** , The amount of frames for the space duration.
+
+* **Interpolation**
+
+* * **Linear** and **Bezier** , convert the last keyframe curve. 
+
+* * **Hold** , adds an extra hold frame before the next block.
 
 Actors
 ------
