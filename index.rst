@@ -15,13 +15,15 @@ Install using .zip file in Preferences->Addons->Install. There is no need to ext
 Recommended Practices and tips
 ------------------------------
 
-**Pose Markers are cleared and generated in the Action Editor/Dope Sheet for the output Action.**
+* **Pose Markers are cleared and generated in the Action Editor/Dope Sheet for the output Action.**
 
-**Start animations on frame 1** Starting an animation at frame zero can create duration calculation issues for node display and generation of pose markers.
+* **Start animations on frame 1** Starting an animation at frame zero can create duration calculation issues for node display and generation of pose markers.
 
-**Optimize animations** Actions Nodes can become slow if Actions contain keyframes on every frame, for every channel. This be the case when the animation is baked or derived from performance capture. Use the decimator in the Animation Curves window or Decimate operator on the Action Node -> Tools, to reduce unnecessary frames. 
+* **Optimize animations** Actions Nodes can become slow if Actions contain keyframes on every frame, for every channel. This be the case when the animation is baked or derived from performance capture. Use the decimator in the Animation Curves window or Decimate operator on the Action Node -> Tools, to reduce unnecessary frames. 
 
-**Make a dedicated Root Bone** when using Root Motion if a root and includes a lot of movement. This may be the case with Hip/Root bones. Use the Transfer Keyframes Action Operator to copy selective channels to the new root. The new root channel group must first be intiliased on the action by keying the disired channels. Often only the forward axis and vertical axis of rotation needs to be transferred. 
+* **Make a dedicated Root Bone** when using Root Motion if a root and includes a lot of movement. This may be the case with Hip/Root bones. Use the Transfer Keyframes Action Operator to copy selective channels to the new root. The new root channel group must first be intiliased on the action by keying the disired channels. Often only the forward axis and vertical axis of rotation needs to be transferred. 
+
+* **Make sure rotations are using Euler rotations** when using Root Motion. Use the Convert Root To Euler operator if rotations are quaternion. This will create new roation channels and mute the old ones. Remember to also set the correct rotation mode on the Actor's root transform settings.
 
 Nodes
 -----
@@ -119,7 +121,7 @@ Action Operators
 Transfer Keyframes
 ==================
 
-Clear root keyframes and copy animation data from one channel group to another. Useful when creating a new root bone with selective channels. Choose between location, rotation and scale keys. The source channels will be muted.
+(destructive), Clear root keyframes and copy animation data from one channel group to another. Useful when creating a new root bone with selective channels. Choose between location, rotation and scale keys. The source channels will be muted.
 
 Decimate
 ========
@@ -131,7 +133,7 @@ Reduce keyframe on this action (destructive) using the ratio method.
 Convert Root To Euler
 ======================
 
-Convert root rotations from quaternions to euler rotation keys. Creats new channels and disables the quaternion channels.
+Convert root rotations from quaternions to euler rotation keys. Creates new channels and disables the quaternion channels. Make sure that the rotation mode is also changed on the root of the Actor.
 
 
 
