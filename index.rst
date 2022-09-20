@@ -6,10 +6,22 @@ https://twitter.com/OTrealms
 
 :Version: 0.1.0
 
-Action Blocks is a constructor addon for creating complex animations using real keyframes and Actions within a custom node-graph interface. 
+Action Blocks is a Blender addon addon for constructing complex animations using real keyframes and Actions within a custom node-graph interface. 
+
+Install using .zip file in Preferences->Addons->Install. There is no need to extract the .zip file.
 
 .. contents::
 
+Recommended Practices and tips
+------------------------------
+
+**Pose Markers are cleared and generated in the Action Editor/Dope Sheet for the output Action.**
+
+**Start animations on frame 1** Starting an animation at frame zero can create duration calculation issues for node display and generation of pose markers.
+
+**Optimize animations** Actions Nodes can become slow if Actions contain keyframes on every frame, for every channel. This be the case when the animation is baked or derived from performance capture. Use the decimator in the Animation Curves window or Decimate operator on the Action Node -> Tools, to reduce unnecessary frames. 
+
+**Make a dedicated Root Bone** when using Root Motion if a root and includes a lot of movement. This may be the case with Hip/Root bones. Use the Transfer Keyframes Action Operator to copy selective channels to the new root. The new root channel group must first be intiliased on the action by keying the disired channels. Often only the forward axis and vertical axis of rotation needs to be transferred. 
 
 Nodes
 -----
@@ -22,24 +34,30 @@ Un-freezing a node at the beggining of a chain will recursively unfreeze all nod
 Action Out Node
 ===============
 
-**Target Action** , The Action to write keyframes onto.
+.. image:: ActionOutNode.JPG
 
-**Auto-Refresh** , Update the Target Action when adjusting parameters or socket links.
+* **Target Action** , The Action to write keyframes onto.
 
-**Root Motion** , Use the accumulated position and rotation of the root group for calculating motion such as walking.
+* **Auto-Refresh** , Update the Target Action when adjusting parameters or socket links.
 
-**Quality** , Draft = Speed up build time by only using frame times and values, excludes handles.
+* **Root Motion** , Use the accumulated position and rotation of the root group for calculating motion such as walking.
 
-**Frame Step** , Reduce frames by keeping only every 'nth' frame for faster build time, especially when using baked or motion capture data.
+* **Quality**
+* * **Full** , No reduction in data.
+* * **Draft** , Speed up build time by only using frame times and values, excludes handles.
 
-**Hold Frames** , Hold frames will be added at the end of each action or repeat such as when using Action Range. Not compatible with root motion.
+* **Frame Step** , Reduce frames by keeping only every 'nth' frame for faster build time, especially when using baked or motion capture data. Does not affect root group.
 
-**Root**, The Root group used for motion and rotation.
+* **Hold Frames** , Hold frames will be added at the end of each action or repeat such as when using Action Range. Not compatible with root motion.
+
+* **Root**, The Root group used for motion and rotation.
 
 
 
 Action Node
-===============
+============
+
+.. image:: ActionNode.JPG
 
 **Action In** , An input Action to contribute to the constructed output.
 
@@ -53,15 +71,11 @@ Action Node
 
 **Root Motion**, Apply root motion to and from this Action.
 
-Spacer Node
-===========
-
-**Duration** , Add empty space between blocks and interpolate between them. Duration in frames.
-
-**Interpolation** , Blending between between blocks. 'Linear' and 'Bezier' convert the last keyframe curve. 'Hold' adds an extra hold frame before the next block.
 
 Mix Node
 ========
+
+.. image:: MixNode.JPG
 
 **Modes** 
 
@@ -75,6 +89,9 @@ Mix Node
 
 Spacer Node
 ============
+
+.. image:: SpacerNode.JPG
+
 The Spacer Node can be used to add extra time, before, between or after blocks. Using a spacer between blocks can function like a blended transition.
 
 * **Duration** , The amount of frames for the space duration.
@@ -88,17 +105,21 @@ The Spacer Node can be used to add extra time, before, between or after blocks. 
 Actors
 ------
 
+.. image:: Actors.JPG
+
 Actors provide a convenient way to select objects and edit action on the correct object. An actor can be any object with animation data and an assigned action.
-If the assigned action is of the regular animation type, a root group can be set. When there ar multiple actors, each Action Blocks node group will remember the last active actor.
+If the assigned action is of the regular animation type, a root group can be set. When there are multiple actors, each Action Blocks node group will remember the last active actor.
 Actors are used to pre-fill operators such as Edit, Decimate, Convert Root to Euler and Transfer Keyframes
 
-Operators
----------
+Action Operators
+----------------
+
+.. image:: ActionOperators.JPG
 
 Transfer Keyframes
 ==================
 
-Copy animation data from one channel group to another. Useful when creating a new root bone with selective channels. Choose between location, rotation and scale keys.
+Clear root keyframes and copy animation data from one channel group to another. Useful when creating a new root bone with selective channels. Choose between location, rotation and scale keys. The source channels will be muted.
 
 Decimate
 ========
