@@ -6,7 +6,7 @@ https://twitter.com/OTrealms
 
 :Version: 0.1.0
 
-Action Blocks is a Blender addon addon for constructing complex animations using real keyframes and Actions within a custom node-graph interface. 
+Action Blocks is a Blender add-on for constructing complex animations using real keyframes and Actions within a custom node-graph interface. 
 
 Install using .zip file in Preferences->Addons->Install. There is no need to extract the .zip file.
 
