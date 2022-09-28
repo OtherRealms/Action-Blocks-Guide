@@ -69,7 +69,7 @@ Action Node
 
 **Action Range** , The Action's frame range, this uses built-in Action settings and is not controlled per-node.
 
-**Block Range** , The node's output frame range. 'Start' is relative block's first frame, 'End' is global time.
+**Block Range** , The node's output frame range. Relative to block's first frame.
 
 **Root Motion**, Apply root motion to and from this Action.
 
@@ -83,11 +83,11 @@ Mix Node
 
 * **Combine**  ,Use keyframes from both inputs, input 2 will replace any overlapping frames. 
 
-* **Replace** ,Excludes frames from input1 where there are frames in range for input2, only replaces available channels. 
+* **Replace** ,Excludes frames from input1 where there are frames in range for input2, only replaces available input2 channels. 
 
 * **Extend**  ,Add input2 to the end of input1
 
-**Use Range** , The frame range for mix to take affect.
+**Use Range** , The frame range for mix to take affect, action output time.
 
 Spacer Node
 ============
