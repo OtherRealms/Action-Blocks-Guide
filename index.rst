@@ -25,6 +25,8 @@ Recommended Practices and tips
 
 * **Make sure rotations are using Euler rotations** when using Root Motion. Use the Convert Root To Euler operator if rotations are quaternion. This will create new roation channels and mute the old ones. Remember to also set the correct rotation mode on the Actor's root transform settings.
 
+* *Include Scale Keyframes.** If there are no scale frames it can result in 0,0,0 scale values and actors that appear to shrink or grow. If this happens Alt-S will reset the the scale values to 1,1,1, Then ensure actions contain scale frames. Keep in mind that trimming such as using Action Range may exclude these frames.
+
 Nodes
 -----
 
@@ -42,8 +44,6 @@ Action Out Node
 
 * **Auto-Refresh** , Update the Target Action when adjusting parameters or socket links.
 
-* **Root Motion** , Use the accumulated position and rotation of the root group for calculating motion such as walking.
-
 * **Quality**
 * * **Full** , No reduction in data.
 * * **Draft** , Speed up build time by only using frame times and values, excludes handles.
@@ -52,7 +52,11 @@ Action Out Node
 
 * **Hold Frames** , Hold frames will be added at the end of each action or repeat such as when using Action Range. Not compatible with root motion.
 
-* **Root**, The Root group used for motion and rotation.
+* **Root Motion** , Use the accumulated position and rotation of the root group for calculating motion such as walking.
+
+* * **Root**, The Root group used for motion and rotation.
+* * **Allow Blending**, Allow blending operation availbale on each node to affect the Root channels.
+* * **Location/Rotation**, The axis which will be used for root motion. Note, objects will typically use Z up in world space with the exception of cameras which have Y up. Bones transforms are relative to parents and therefore have their own rotation matrices and can differ depending on rigging convention and source of armature. For example a root bone sourced from another software may be forward facing rather than vertical when imported.  
 
 
 
@@ -61,17 +65,25 @@ Action Node
 
 .. image:: ActionNode.JPG
 
-**Action In** , An input Action to contribute to the constructed output.
+* **Action In** , An input Action to contribute to the constructed output.
 
-**Frame Colour** , Set the dopesheet frame colour for this action's portion of the output.
+* **Frame Colour** , Set the dopesheet frame colour for this action's portion of the output.
 
-**Blend In** , Then number of frames to blend between current Action and previous frames.
+* **Scale** , Temporal scale the the action.
 
-**Action Range** , The Action's frame range, this uses built-in Action settings and is not controlled per-node.
+* **Repeat** , Repeat the entire action.
 
-**Block Range** , The node's output frame range. Relative to block's first frame.
+* * **Blend** , Blend between repeats to improve looping.
 
-**Root Motion**, Apply root motion to and from this Action.
+* **Reverse** , Reverse the action, Roo Motion not supported.
+
+* **Blend In** , Then number of frames to blend between current Action and previous frames.
+
+* **Action Range** , The Action's frame range, this uses built-in Action settings and is not controlled per-node.
+
+* **Block Range** , The node's output frame range. Relative to block's first frame.
+
+* **Root Motion**, Apply root motion to and from this Action.
 
 
 Mix Node
@@ -87,7 +99,9 @@ Mix Node
 
 * **Extend**  ,Add input2 to the end of input1
 
-**Use Range** , The frame range for mix to take affect, action output time.
+* **Blend-in/Out** , (Only for Replace), blend frames in and out of input2.
+
+* **Use Range** , The frame range for mix to take affect, action output time.
 
 Spacer Node
 ============
@@ -99,9 +113,8 @@ The Spacer Node can be used to add extra time, before, between or after blocks. 
 * **Duration** , The amount of frames for the space duration.
 
 * **Interpolation**
-
-* * **Linear** and **Bezier** , convert the last keyframe curve. 
-
+* * **Linear** , converts the previous keyframe curve for Linear interpolation. 
+* * **Bezier** , convert the previous two keyframes to bezier curves. 
 * * **Hold** , adds an extra hold frame before the next block.
 
 Actors
