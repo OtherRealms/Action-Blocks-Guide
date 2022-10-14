@@ -73,8 +73,6 @@ Action Node
 
 * **Repeat** , Repeat the entire action.
 
-* * **Blend** , Blend between repeats to improve looping.
-
 * **Reverse** , Reverse the action, Roo Motion not supported.
 
 * **Blend In** , Then number of frames to blend between current Action and previous frames.
@@ -85,6 +83,11 @@ Action Node
 
 * **Root Motion**, Apply root motion to and from this Action.
 
+* **Loop Blend** , Blend between repeats to improve looping.
+
+* * **Direction** , Only affect frames in a certain direction to match the start and end of the action.
+
+
 
 Mix Node
 ========
@@ -93,7 +96,7 @@ Mix Node
 
 **Modes** 
 
-* **Combine**  ,Use keyframes from both inputs, input 2 will replace any overlapping frames. 
+* **Combine**  ,Use keyframes from both inputs, input 2 will fill any missing frames from input1. 
 
 * **Replace** ,Excludes frames from input1 where there are frames in range for input2, only replaces available input2 channels. 
 
@@ -117,6 +120,14 @@ The Spacer Node can be used to add extra time, before, between or after blocks. 
 * * **Bezier** , convert the previous two keyframes to bezier curves. 
 * * **Hold** , adds an extra hold frame before the next block.
 
+
+Frame Step Node
+===============
+.. image:: FrameStepNode.JPG
+
+* **Frame Step** , reduce frames by keeping only every nth frame.
+
+
 Actors
 ------
 
@@ -139,7 +150,7 @@ Transfer Keyframes
 Decimate
 ========
 
-Reduce keyframe on this action (destructive) using the ratio method. 
+(destructive), Reduce keyframe on this action (destructive) using the ratio method. 
 
 **Ratio** , The portion of keyframes to remove.
 
