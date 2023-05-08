@@ -62,9 +62,9 @@ Action Out Node
 
 * * **Allow Blending**, Allow blending operation availbale on each node to affect the Root channels.
 
-* **Slide Removal**,Uses Pose Bones to contrain Root motion movement to activity of Pose Bones such as thighs(Fk) or feet controllers(IK).
+* * **Slide Removal**,Uses Pose Bones to contrain Root motion movement to activity of Pose Bones such as thighs(Fk) or feet controllers(IK).
 
-* **Method**, Pose Bone animation affects root translation using the method; MIN-The lowest value is used, MAX-Highest value is used to constrain, SUM-The total of values are used to constrain Root translation.
+* * **Method**, Pose Bone animation affects root translation using the method; MIN-The lowest value is used, MAX-Highest value is used to constrain, SUM-The total of values are used to constrain Root translation.
 
 * * **Location/Rotation**, The axis which will be used for root motion. Note, objects will typically use Z up in world space with the exception of cameras which have Y up. Bones transforms are relative to parents and therefore have their own rotation matrices and can differ depending on rigging convention and source of armature. For example a root bone sourced from another software may be forward facing rather than vertical when imported.  
 
@@ -108,7 +108,7 @@ Action Looping
 
 Action Operators
 ==================
-.. image:: ActionNodeoperations.JPG
+.. image:: ActionNodeOperations.JPG
 
 * **Convert To Euler** , Convert the Action's bone rotations from quaternions to euler rotation keys. Creates new channels and disables the quaternion channels. Make sure that the rotation mode is also changed on the bone of the Actor.
 
@@ -116,7 +116,7 @@ Action Operators
 
 * * **Ratio** , The portion of keyframes to remove.
 
-.. image:: TransferOP.JPG
+.. image:: TransferOp.JPG
 
 * **Transfer Keyframes** ,Copy animation data from one keyframe group to another.
 
