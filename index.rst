@@ -2,7 +2,11 @@
 Action Blocks 
 =============
 
-https://twitter.com/OTrealms
+social:
+https://bsky.app/profile/otrealms.bsky.social
+
+email for bug reports and enquiries: 
+contact@pablotochez.com
 
 :Version: 2.0.0 Beta
 
@@ -21,16 +25,16 @@ Recommended Practices and tips
 
 * **Optimize animations** Actions Nodes can become slow if Actions contain keyframes on every frame, for every channel. This be the case when the animation is baked or derived from performance capture. Use the decimator in the Animation Curves window or Decimate operator on the Action Node -> Tools, to reduce unnecessary frames. 
 
-* **Make a dedicated Root Bone** When using Root Motion if a root and includes a lot of movement. This may be the case with Hip/Root bones. Use the Transfer Keyframes Action Operator to copy selective channels to the new root. The new root channel group must first be intiliased on the action by keying the disired channels. Often only the forward axis and vertical axis of rotation needs to be transferred. 
+* **Make a dedicated Root Bone** When using Root Motion if a root and includes a lot of movement. This may be the case with Hip/Root bones. Use the Transfer Keyframes Action Operator to copy selective channels to the new root. The new root channel group must first be initialised on the action by keying the desired channels. Often only the forward axis and vertical axis of rotation needs to be transferred. 
 
-* **Make sure rotations are using Euler rotations** When using Root Motion. Use the Convert Root To Euler operator if rotations are quaternion. This will create new roation channels and mute the old ones. Remember to also set the correct rotation mode on the Actor's root transform settings.
+* **Make sure rotations are using Euler rotations** When using Root Motion. Use the Convert Root To Euler operator if rotations are quaternion. This will create new rotation channels and mute the old ones. Remember to also set the correct rotation mode on the Actor's root transform settings.
 
 * **Include Scale Keyframes.** If there are no scale frames it can result in 0,0,0 scale values and actors that appear to shrink or grow. If this happens Alt-S will reset the the scale values to 1,1,1, Then ensure actions contain scale frames. Keep in mind that trimming such as using Action Range may exclude these frames.
 
 Working With Slots
 -------------------
 
-When loading an action, available slots are detected. Once a chain is connected to an Action Out node, they will pass down the chain and be added to the output target action. Everytime the target action is rebuilt,
+When loading an action, available slots are detected. Once a chain is connected to an Action Out node, they will pass down the chain and be added to the output target action. Every time the target action is rebuilt,
 these slots are updated and removed and are removed if they are no longer found in the chain.
 
 Slots can be bypassed by unchecking them individually on each Action Node (Right panel->Node->Advanced).
@@ -57,7 +61,7 @@ Actors are used to pre-fill operators such as Edit, Decimate, Convert Root to Eu
 
 * * **Root**, The Root group used for motion and rotation.
 
-* * **Slide Removal**,Uses Pose Bones to contrain Root motion movement to activity of Pose Bones such as thighs(Fk) or feet controllers(IK).
+* * **Slide Removal**,Uses Pose Bones to constrain Root motion movement to activity of Pose Bones such as thighs(Fk) or feet controllers(IK).
 
 * * **Method**, Pose Bone animation affects root translation using the method; MIN-The lowest value is used, MAX-Highest value is used to constrain, SUM-The total of values are used to constrain Root translation.
 
@@ -73,7 +77,7 @@ Frozen nodes
 .. image:: Freeze.JPG
 
 Freezing a node and all previous nodes, saving their frame range from being calculated and overwritten.
-Un-freezing a node at the beggining of a chain will recursively unfreeze all nodes along the chain. Slight performance improvement.
+Un-freezing a node at the beginning of a chain will recursively unfreeze all nodes along the chain. Slight performance improvement.
 
 Action Out Node
 ===============
@@ -142,7 +146,7 @@ Action - Advanced Options
 
 * **Reverse** , Reverse the action, Roo Motion not supported.
 
-* **Match Pose/Seek** , Match the previous Block's end frame with the most similar frame in this blocks animation, within seek distance (preformance warning: evaluates interpolated frames within seek distance).
+* **Match Pose/Seek** , Match the previous Block's end frame with the most similar frame in this blocks animation, within seek distance (performance warning: evaluates interpolated frames within seek distance).
 
 * **Skip Root Motion**, Not not apply root motion to and from this block.
 
@@ -164,8 +168,8 @@ Action Operators
 
 * * **From** , The source Keyframe Group.
 * * **To** , The Target Keyframe Group.
-* * **Remove From Original** , Delete Source keyframes aftercopying. Tip: it may be a good idea to add a new first frame to the deleted group to avoid unwanted drifting.
-* * **Convert To Euler** , Ensure's that the newly copied frames are also Euler if Quaternion roations are enabled.
+* * **Remove From Original** , Delete Source keyframes after copying. Tip: it may be a good idea to add a new first frame to the deleted group to avoid unwanted drifting.
+* * **Convert To Euler** , Ensure's that the newly copied frames are also Euler if Quaternion rotations are enabled.
 * * **Location Keys** , Copy Location keyframes from the Source.
 * * **Rotation Euler Keys** , Copy Euler Rotations from Source.
 * * **Quaternion WXYZ** , Copy Quaternion keyframes from source.
@@ -177,8 +181,8 @@ Action Operators
 * **Filter Groups** ,create filter groups to selectively use animation channels. For example only enable upper body animation for use with mixing into full body animation.
 
 * * **Add** , Add a new filter group
-* * **Mode** , Exclude or include filtered groups, ie. Exclude + Head Bone will not use Head Bone animation fronm the node's Action.
-* * **Activate Filter**, Disable filter, can be used with Exlude mode if only using it to control Blend weight.
+* * **Mode** , Exclude or include filtered groups, ie. Exclude + Head Bone will not use Head Bone animation from the node's Action.
+* * **Activate Filter**, Disable filter, can be used with Exclude mode if only using it to control Blend weight.
 * * **Loc** , Bone Location offset.
 * * **Blend Weight** , Override the bone's influence when using blending operations.
 * * **Remove** , Delete filter group
@@ -229,6 +233,6 @@ Value Node
 ==========
 .. image:: ValueNode.JPG
 
-This node can be used as input for durations sockets, repeats, start and end ranges for mix nodes. Float (decimal) values will be rounded to integers where neccessary.
+This node can be used as input for durations sockets, repeats, start and end ranges for mix nodes. Float (decimal) values will be rounded to integers where necessary.
 
 
