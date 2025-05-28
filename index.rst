@@ -4,11 +4,11 @@ Action Blocks
 
 https://twitter.com/OTrealms
 
-:Version: 0.1.2
+:Version: 2.0.0 Beta
 
 Action Blocks is a Blender add-on for constructing complex animations using real keyframes and Actions within a custom node-graph interface. 
 
-Install using .zip file in Preferences->Addons->Install. There is no need to extract the .zip file.
+Install using .zip file in Preferences->Extensions->Install from Disk. There is no need to extract the .zip file.
 
 .. contents::
 
@@ -27,13 +27,53 @@ Recommended Practices and tips
 
 * **Include Scale Keyframes.** If there are no scale frames it can result in 0,0,0 scale values and actors that appear to shrink or grow. If this happens Alt-S will reset the the scale values to 1,1,1, Then ensure actions contain scale frames. Keep in mind that trimming such as using Action Range may exclude these frames.
 
+Working With Slots
+-------------------
+
+When loading an action, available slots are detected. Once a chain is connected to an Action Out node, they will pass down the chain and be added to the output target action. Everytime the target action is rebuilt,
+these slots are updated and removed and are removed if they are no longer found in the chain.
+
+Slots can be bypassed by unchecking them individually on each Action Node (Right panel->Node->Advanced).
+
+When clicking Edit Action on and action or an Out node, or when selecting and Actor, the object will be matched with their last associated slot identifier. Therefore, it's not recommended to alternate between slots for a single object.
+If there are multiple objects in a Actor collection, slots are assigned with their corresponding slots. This includes Shape Key slots for mesh objects.
+
+Actors
+------
+
+.. image:: Actors.JPG
+
+
+Actors provide a convenient way to select objects and edit action on the correct object. An actor can be any object with animation data and an assigned action.
+If the assigned action is of the regular animation type, a root group can be set. When there are multiple actors, each Action Blocks node group will remember the last active actor.
+Actors are used to pre-fill operators such as Edit, Decimate, Convert Root to Euler and Transfer Keyframes
+
+**Pose Bones** , Pose bones are important bones for a gait cycle for functions including Pose Matching and Slide Removal. For FK rigs, upper thigh and arm rotation is recommend. IK limbs are best associated with control bone locations.
+
+
+.. image:: ActorsRootMotion.JPG
+
+* **Root Motion** , Use the accumulated position and rotation of the root group for calculating motion such as walking.
+
+* * **Root**, The Root group used for motion and rotation.
+
+* * **Slide Removal**,Uses Pose Bones to contrain Root motion movement to activity of Pose Bones such as thighs(Fk) or feet controllers(IK).
+
+* * **Method**, Pose Bone animation affects root translation using the method; MIN-The lowest value is used, MAX-Highest value is used to constrain, SUM-The total of values are used to constrain Root translation.
+
+* * **Location/Rotation**, The axis which will be used for root motion. Note, objects will typically use Z up in world space with the exception of cameras which have Y up. Bones transforms are relative to parents and therefore have their own rotation matrices and can differ depending on rigging convention and source of armature. For example a root bone sourced from another software may be forward facing rather than vertical when imported.  
+
+
 Nodes
 -----
 
-Freeze
-======
-Freeze this node and all previous nodes, saving their frame range from being calculated and overwritten.
-Un-freezing a node at the beggining of a chain will recursively unfreeze all nodes along the chain.
+Frozen nodes
+============
+
+.. image:: Freeze.JPG
+
+Freezing a node and all previous nodes, saving their frame range from being calculated and overwritten.
+Un-freezing a node at the beggining of a chain will recursively unfreeze all nodes along the chain. Slight performance improvement.
 
 Action Out Node
 ===============
@@ -42,7 +82,9 @@ Action Out Node
 
 * **Target Action** , The Action to write keyframes onto.
 
-* **Buil Action** , manually rebuild animation output, required if  not using Auto-Refresh and when only updating source Actions without adjusting node parameters/
+* **Edit Action**, assigns the action to the active object but only if the active object is suitable for the action or uses a matching slot. Other the first best suitable object will be selected from the Actor collection.
+
+* **Build Action** , manually rebuild animation output, required if  not using Auto-Refresh and when only updating source Actions without adjusting node parameters/
 
 * **Auto-Refresh** , Update the Target Action when adjusting parameters or socket links.
 
@@ -56,20 +98,6 @@ Action Out Node
 
 * **Hold Frames** , Hold frames will be added at the end of each action or repeat such as when using Action Range. Not compatible with root motion.
 
-* **Root Motion** , Use the accumulated position and rotation of the root group for calculating motion such as walking.
-
-* * **Root**, The Root group used for motion and rotation.
-
-* * **Allow Blending**, Allow blending operation availbale on each node to affect the Root channels.
-
-* * **Slide Removal**,Uses Pose Bones to contrain Root motion movement to activity of Pose Bones such as thighs(Fk) or feet controllers(IK).
-
-* * **Method**, Pose Bone animation affects root translation using the method; MIN-The lowest value is used, MAX-Highest value is used to constrain, SUM-The total of values are used to constrain Root translation.
-
-* * **Location/Rotation**, The axis which will be used for root motion. Note, objects will typically use Z up in world space with the exception of cameras which have Y up. Bones transforms are relative to parents and therefore have their own rotation matrices and can differ depending on rigging convention and source of armature. For example a root bone sourced from another software may be forward facing rather than vertical when imported.  
-
-
-
 Action Node
 ============
 
@@ -77,34 +105,48 @@ Action Node
 
 * **Action In** , An input Action to contribute to the constructed output.
 
+* **New Action** , If there is no action assigned it makes a new action and assigns it to the node. Otherwise, it makes a full copy of the active action and assigns it. Consider using this before using any operations on the action.
+
+* **Edit Action**, assigns the action to the active object but only if the active object is suitable for the action or uses a matching slot. Other the first best suitable object will be selected from the Actor collection.
+
 * **Frame Colour** , Set the dopesheet frame colour for this action's portion of the output.
+
+* **Blend In** , Then number of frames to blend between current Action and previous frames.
+
+* **Blend Direction** ,
+    * Forwards - Blends with frames from the start of this block
+    * Back - Blends with frames on the previous block
+    * Both - Blends forward and back in the same number of frames. i.e if blend in=10, it will blend 10 frames back and 10 forward.
+  
+* **Action Range** , The Action's frame range, this uses built-in Action settings and is not controlled per-node.
+
+* **Block Range** , The node's output frame range. Relative to block's first frame.
 
 * **Scale** , Temporal scale the the action.
 
 * **Repeat** , Repeat the entire action.
 
-* **Blend In** , Then number of frames to blend between current Action and previous frames.
+Action - Advanced Options
+=========================
 
-* **Reverse** , Reverse the action, Roo Motion not supported.
+.. image:: ActionNodeAdvanced.JPG
 
-* **Action Range** , The Action's frame range, this uses built-in Action settings and is not controlled per-node.
-
-* **Block Range** , The node's output frame range. Relative to block's first frame.
-
-* **Match Pose/Seek** , Match the previous Block's end frame with the most similar frame in this blocks animation, within seek distance (preformance warning: evaluates interpolated frames within seek distance).
-
-* **Root Motion**, Apply root motion to and from this Action.
-
-* * **Rot/loc** , Flip the roation and location frames of the root bone. Works best used if all bones and controls are within the Root bones heirarchy.
-
-Action Looping
-==============
-
-.. image:: ActionNodeLoop.JPG
+* **Slots** , Displays available slots found on the node's action. Uncheck slots to bypass it. Click Refresh if any slots have been renamed, added or removed. The slot icon displays the data-type icon (Blender 4.5+)
 
 * **Loop Blend** , Blend action between repeats, to improve looping.
 
-* * **Direction** , Only affect frames in a certain direction to match the start and end of the action.
+* **Direction** , Loop Blending only affect frames in a certain direction to match the start and end of the action.
+    * Forwards - Blends with frames from the start of this block
+    * Back - Blends with frames on the previous block
+    * Both - Blends forward and back in the same number of frames. i.e if blend in=10, it will blend 10 frames back and 10 forward.
+
+* **Reverse** , Reverse the action, Roo Motion not supported.
+
+* **Match Pose/Seek** , Match the previous Block's end frame with the most similar frame in this blocks animation, within seek distance (preformance warning: evaluates interpolated frames within seek distance).
+
+* **Skip Root Motion**, Not not apply root motion to and from this block.
+
+* **Allow Blending On Root**, Allow blending operations on each action and mix node to affect the Root channels.
 
 Action Operators
 ==================
@@ -183,17 +225,10 @@ Frame Step Node
 
 * **Frame Step** , reduce frames by keeping only every nth frame.
 
+Value Node
+==========
+.. image:: ValueNode.JPG
 
-Actors
-------
-
-.. image:: Actors.JPG
-
-Actors provide a convenient way to select objects and edit action on the correct object. An actor can be any object with animation data and an assigned action.
-If the assigned action is of the regular animation type, a root group can be set. When there are multiple actors, each Action Blocks node group will remember the last active actor.
-Actors are used to pre-fill operators such as Edit, Decimate, Convert Root to Euler and Transfer Keyframes
-
-**Pose Bones** , Pose bones are important bones for a gait cycle for functions including Pose Matching and Slide Removal. For FK rigs, upper thigh and arm rotation is recommend. IK limbs are best associated with control bone locations.
-
+This node can be used as input for durations sockets, repeats, start and end ranges for mix nodes. Float (decimal) values will be rounded to integers where neccessary.
 
 
