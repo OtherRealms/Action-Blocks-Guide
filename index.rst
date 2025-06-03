@@ -12,25 +12,49 @@ contact@pablotochez.com
 
 Action Blocks is a Blender add-on for constructing complex animations using real keyframes and Actions within a custom node-graph interface. 
 
-Install using .zip file in Preferences->Extensions->Install from Disk. There is no need to extract the .zip file.
+Install using .zip file in Preferences-> **Extensions** ->Install from Disk. **There is no need to extract the .zip file manually.** Contents will be extracted by Blender to the PC's User Extensions directory.
 
 .. contents::
 
-Recommended Practices and tips
-------------------------------
+Getting Started
+---------------
 
+First set an area to the Action Blocks node graph.
+
+.. image:: UIArea.JPG
+
+Then select New to make an Action Blocks node tree data-block.
+
+.. image:: New.JPG
+
+Rename your new graph and click initialize.
+
+.. image:: OnNew.JPG
+
+Your first Action node will appear connected to an Action Out node.
+
+.. image:: Initialized.JPG
+
+You may assign an existing Action to the Action node or click New '**+**'. The Out node will have a new 'Action Out' action which can be renamed.
+
+.. image:: ActorMini.JPG
+
+Its a good idea to place your animated object or Armature into its own collection. Then assign it as a new **Actor**. This will let Action Blocks know where to assign the action to and help with selecting objects.
+
+Recommended Practices and Tips
+===============================
+
+* **Nodes=Blocks** , The terms Node and Block are used interchangeably. Specifically, a Block is a node that takes up some time or represents a moment in the final output.
 * **Start animations on frame 1** Starting an animation at frame zero can create duration calculation issues for node display and generation of pose markers.
-
 * **Optimize animations** Actions Nodes can become slow if Actions contain keyframes on every frame, for every channel. This be the case when the animation is baked or derived from performance capture. Use the decimator in the Animation Curves window to reduce unnecessary frames. 
-
 * **Make a dedicated Root Bone or object** Required to use Root Motion. Some armatures use the hip bone for locomotion. Use the **Transfer Keyframes** Action Operator to copy selective channels to the new root. The new root channel group must first be initialised on the action by keying the desired channels. Often only the forward axis and vertical axis of rotation needs to be transferred. 
-
 * **Make sure Root rotations are Euler** When using Root Motion. Use the **Convert Root** To Euler operator if rotations are quaternion. This will create new rotation channels and mute the old ones. Remember to also set the correct rotation mode on the Actor's root transform settings.
-
 * **Include Scale Keyframes.** If there are no scale frames it can result in 0,0,0 scale values and actors that appear to shrink or grow. If this happens Alt-S will reset the the scale values to 1,1,1, Then ensure actions contain scale frames. Keep in mind that trimming such as using Action Range may exclude these frames.
-
 * **Pose Markers** are cleared and generated in the Action Editor/Dope Sheet for the output Action.
-  
+* **Reuse Output Actions** , Don't forget that you can use an output action as an input on another graph or node chain. This will help to organise large chains, improve performance and allow for variations.
+* **Node Properties Can't be animated** , Unlike other nodes in Blender, action Blocks Nodes are not designed to be animated. Instead, each node represent a place in the timeline. 
+  Observe the interactive duration bar at the top of each node to see where this block starts and ends. Changes over time are achieved using blend-in/ease properties.
+
 Working With Slots
 -------------------
 
@@ -56,9 +80,8 @@ Actors provide a convenient way to select objects and edit action on the correct
 If the assigned action is of the object or armature animation type, a root fcurve group can be set. When there are multiple actors, each Action Blocks node group will remember the last active actor.
 Actors are used to pre-fill operators such as Edit, Convert Root to Euler, Mixamo conversion and Transfer Keyframes.
 
-**Edit With Root Offsets** , When enabled with Root Motion, when clicking Edit Action, the Actor will be oriented at the beginning of the block's last calculated root motion coordinates.
-
-**Pose Bones** , Pose bones are important bones for a gait cycle for functions including Pose Matching and Slide Removal. For FK rigs, upper thighs for slide removal, and additionally arm rotations are recommend for Pose Match. IK limbs are best associated with control bone locations.
+* **Edit With Root Offsets** , When enabled with Root Motion, when clicking Edit Action, the Actor will be oriented at the beginning of the block's last calculated root motion coordinates. And auxiliary root empty object is created and linked to on a constraint on the root object/bone."
+* **Pose Bones** , Pose bones are important bones for a gait cycle for functions including Pose Matching and Slide Removal. For FK rigs, upper leg/thighs for slide removal, and additionally arm rotations and lower legs are recommend for Pose Match. IK limbs are best associated with control bone locations.
 
 
 Root Motion
@@ -71,22 +94,15 @@ Root Motion
 Root motion is the accumulated position and rotation of an actor's root position for calculating traversal motion such as walking and running.
 
 * **Use Root Motion** , Applies the root motion process to all actions containing the assigned root fcurve groups. Nodes can be ignored using their 'Skip Root Motion' parameter.
-
 * **Source** , The source object within the actor collection containing the root.
-
-* **Slot** , The Action Slot containing root keyframes. **NOTE:** The actor objects should have an action assigned with some arbitrary keyframes during setup, in order to find the available slots and fcurve groups.
-
+* **Slot** , The Action Slot containing root keyframes. 
+  **NOTE:** The actor objects should have an action assigned with some arbitrary keyframes during setup, in order to find the available slots and fcurve groups.
 * **Root**, The Root fcurve group used for motion. Requires location and Euler rotation channels.
-  
 * **Slide Removal**, Works during blend transitions to reduce sliding. Uses Pose Bones to constrain Root motion movement to the activity of Pose Bones such as thighs(Fk) or feet controllers(IK).
-
 * **Method**, Pose Bone animation affects root translation using the method; MIN-The lowest value is used, MAX-Highest value is used to constrain, SUM-The total of values are used to constrain Root translation.
-
 * **Location/Rotation**, The axis which will be used for root motion. For objects, typically X,Y should be enabled for location and optionally Z for vertical climbs. Rotation is typically set to only the Z axis. For Bones. X and Z  with optionally Y. Rotation is usually on the Y axis. 
   **Note:** These options should match the root's final local coordinate even if the parent or armature is rotated 90 degrees.
-
 * **Vertical Axis**, objects will typically use +Z up in world space with the exception of cameras which have +Y up. In pose pace bones are also +Y up. Bones transforms are relative to parents and therefore have their own rotation matrices and can differ depending on rigging convention and source of armature. For example a root bone sourced from another software may be forward facing rather than vertical when imported. Used for root motion offsets.
-
 * **Forward Direction** , The typical facing direction for the actor. Used for root motion offsets.
 
 Create Root Bone
@@ -114,21 +130,13 @@ Action Out Node
 .. image:: ActionOutNode.JPG
 
 * **Target Action** , The Action to write keyframes onto.
-
 * **Edit Action**, assigns the action to the active object but only if the active object is suitable for the action or uses a matching slot. Other the first best suitable object will be selected from the Actor collection.
-
 * **Build Action** , manually rebuild animation output, required if  not using Auto-Refresh and when only updating source Actions without adjusting node parameters/
-
 * **Auto-Refresh** , Update the Target Action when adjusting parameters or socket links.
-
 * **Quality**
-
 * * **Full** , No reduction in data.
-
 * * **Draft** , Speed up build time by only using frame times and values, excludes handles.
-
 * **Frame Step** , Reduce frames by keeping only every 'nth' frame for faster build time, especially when using baked or motion capture data. Does not affect root group.
-
 * **Hold Frames** , Hold frames will be added at the end of each action or repeat such as when using Action Range. Not compatible with Root Motion.
 
 Action Node
@@ -137,55 +145,42 @@ Action Node
 .. image:: ActionNode.JPG
 
 * **Action In** , An input Action to contribute to the constructed output.
-
 * **New Action** , If there is no action assigned it makes a new action and assigns it to the node. Otherwise, it makes a full copy of the active action and assigns it. Consider using this before using any operations on the action.
-
 * **Edit Action**, assigns the action to the active object but only if the active object is suitable for the action or uses a matching slot. Other the first best suitable object will be selected from the Actor collection.
-
 * **Frame Colour** , Set the dopesheet frame colour for this action's portion of the output.
-
 * **Blend In** , Then number of frames to blend between current Action and previous frames.
-
 * **Blend Direction** ,
-    * Forwards - Blends with frames from the start of this block
-    * Back - Blends with frames on the previous block
-    * Both - Blends forward and back in the same number of frames. i.e if blend in=10, it will blend 10 frames back and 10 forward.
+    * Forwards-> Blends with frames from the start of this block
+    * Back<- Blends with frames on the previous block
+    * Both<-> Blends forward and back in the same number of frames. i.e if blend in=10, it will blend 10 frames back and 10 forward.
   
 * **Action Range** , The Action's frame range, this uses built-in Action settings and is not controlled per-node.
-
 * **Block Range** , The node's output frame range. Relative to block's first frame.
-
 * **Scale** , Temporal scale the the action.
-
 * **Repeat** , Repeat the entire action.
 
 
 Advanced Options
 ~~~~~~~~~~~~~~~~~
-*Action Blocks node-graph Right Panel->Node*
+*Action Blocks node-graph Right Panel->Node->Properties*
 
 .. image:: ActionNodeAdvanced.JPG
 
 * **Slots** , Displays available slots found on the node's action. Uncheck slots to bypass it. Click Refresh if any slots have been renamed, added or removed. The slot icon displays the data-type icon (Blender 4.5+)
-
 * **Loop Blend** , Blend action between repeats, to improve looping.
-
 * **Direction** , Loop Blending only affect frames in a certain direction to match the start and end of the action.
     * Forwards - Blends with frames from the start of this block
     * Back - Blends with frames on the previous block
     * Both - Blends forward and back in the same number of frames. i.e if blend in=10, it will blend 10 frames back and 10 forward.
 
 * **Reverse** , Reverse the action frames.
-
 * **Match Pose/Seek** , Match the previous Block's end frame with the most similar frame in this blocks animation, within seek distance (performance warning: evaluates interpolated frames within seek distance).
-
 * **Skip Root Motion**, Not not apply root motion to and from this block.
-
 * **Allow Blending On Root**, Allow blending operations on each action and mix node to affect the Root channels.
 
 Action Operators
 ~~~~~~~~~~~~~~~~
-*Action Blocks node-graph Right Panel->Node*
+*Action Blocks node-graph Right Panel->Node->Properties*
 
 Operators affect the Action assigned to the active Action Node.
 
@@ -246,7 +241,7 @@ Ensures that root keyframes are complete 3D vectors, for example a location x ke
 Channel Filters
 ~~~~~~~~~~~~~~~
 
-*Action Blocks node-graph Right Panel->Node*
+*Action Blocks node-graph Right Panel->Node->Properties*
 
 Allows non-destructive modifications to specified fcurve groups and transform channels. Create filter groups to selectively use animation channels. For example only enable upper body animation for use with mixing into full body animation.
 They can also be use to offset values using addition and multiplication. Additional option are displayed for the root channel.
@@ -303,20 +298,19 @@ Mix Node
 
 .. image:: MixNode.JPG
 
-Note: To layer animations, its best to leave channels free for input 2. For example, when combining walking (action1) with a head turn(action2), only have keyframes for the neck in action1 and only have neck keyframes in action2.
+Tip: To layer animations, its best to leave channels free for input 2. For example, when combining walking (action1) with a head turn(action2), only have keyframes available for the neck in action1 and only have neck keyframes in action2. 
+This can be done via Action Filters. The Mix blend mode requires the most calculation and should be use sparingly to avoid slowdown.
 
-
-**Modes** 
-
-* **Combine**  ,Use keyframes from both inputs, input 2 will fill any missing frames from input1. . 
-
-* **Replace** ,Excludes frames from input1 where there are frames in range for input2, only replaces available input2 channels. 
-
-* **Extend**  ,Add input2 to the end time of input1
-
-* **Blend-in/Out** , (Only for Replace), blend frames in and out of input2.
-
-* **Use Range** , The frame range for mix to take affect, action output time.
+* **Modes** 
+* * **Combine**  ,Use keyframes from both inputs, input 2 will fill any missing frames from input1. . 
+* * **Replace** ,Excludes frames from input1 where there are frames in range for input2, only replaces available input2 channels. 
+* * **Extend**  ,Add input2 to the end time of input1
+* * **Mix** , Blend two animations together by the given factor. All keyed frames from both inputs are preserved and combined for the output. Uses linear interpolation to guess frames on each input that are not existing in the other input.
+* **Factor** , (Modes:Mix), The mix factor between the two inputs. 0= input1 1= input2
+* **Blend-in** , (Modes:Replace,Mix), The number of frames to blend-in from input2 into input1. Blend range frames will be added where non-existent.
+* **Use Range** ,(Modes:Combine,Replace,Mix) The start and end frame range for mixing to take affect, action output time.
+* **Trim to Fit** , (Modes:Combine,Replace,Mix) If the input1 animation has a shorter duration than input2, the input2 animation is trimmed to fit.
+* **Allow Blending on Root** (Right Panel-> Node->Properties), Typically blending operation are not permitted on the Actor's root channels. Check this to enable root blending.
 
 Spacer Node
 ============
@@ -337,7 +331,7 @@ Frame Step Node
 ===============
 .. image:: FrameStepNode.JPG
 
-* **Frame Step** , reduce frames by keeping only every nth frame.
+* **Frame Step** , reduce frames by keeping only every nth frame for nodes prior to this nodes placement in the graph.
 
 Value Node
 ==========
@@ -345,4 +339,24 @@ Value Node
 
 This node can be used as input for durations sockets, repeats, start and end ranges for mix nodes. Float (decimal) values will be rounded to integers where necessary.
 
+Display Settings
+----------------
 
+Motion Path
+===========
+
+*Action Blocks node-graph Right Panel->Display Settings*
+
+.. image:: MotionPath.JPG
+
+A motion path overlay can be calculate and displayed within the 3D scene. It is specifically used for root motion and will not display any other bones.
+**Note:** , The motion path is updated only when and output action is re-built.
+
+* **Display Motion Path** , Enable path calculation and display after building and output.
+* **Always Show** , Keep the path visible when the Actor root object is not selected.
+* **Falloff** , The path fadeout region size around the Actor root.
+* **Overlay Scale** , Line and point thickness in pixels.
+* **Frame Step** ,calculate points at every nth scene frame. Higher values improve performance.
+* **Line Opacity** ,Line overlay transparency.
+* **Frame Step Colour** , Draw colour for frame step points. Opacity can be adjusted using the Alpha channel.
+* **Occlude Path** , Allow the path to be hidden behind 3D meshes.
