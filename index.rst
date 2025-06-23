@@ -80,8 +80,10 @@ Actors provide a convenient way to select objects and edit action on the correct
 If the assigned action is of the object or armature animation type, a root fcurve group can be set. When there are multiple actors, each Action Blocks node group will remember the last active actor.
 Actors are used to pre-fill operators such as Edit, Convert Root to Euler, Mixamo conversion and Transfer Keyframes.
 
-* **Edit With Root Offsets** , When enabled with Root Motion, when clicking Edit Action, the Actor will be oriented at the beginning of the block's last calculated root motion coordinates. And auxiliary root empty object is created and linked to on a constraint on the root object/bone."
-* **Pose Bones** , Pose bones are important bones for a gait cycle for functions including Pose Matching and Slide Removal. For FK rigs, upper leg/thighs for slide removal, and additionally arm rotations and lower legs are recommend for Pose Match. IK limbs are best associated with control bone locations.
+* **Enabled constraint**, Displayed when there is a defined root. Toggle to enable/disable the root auxiliary constraint which previews a source action in the root motion postion.
+* **Import ABBY DEMO**, append the ABBY demo scene containing tutorials and the ABBY rigged character.
+* **Edit With Root Offsets** , When enabled with Root Motion, when clicking Edit Action, the Actor will be oriented at the beginning of the block's last calculated root motion coordinates. And auxiliary root empty object is created and linked to on a constraint on the root object/bone.
+* **Pose Bones** , Pose bones are important bones for a gait cycle for functions including Pose Matching and Slide Removal. For FK rigs, upper leg/thighs for slide removal, and additionally arm rotations and lower legs are recommended for Pose Match. IK limbs are best associated with control bone locations.
 
 
 Root Motion
@@ -103,7 +105,28 @@ Root motion is the accumulated position and rotation of an actor's root position
 * **Location/Rotation**, The axis which will be used for root motion. For objects, typically X,Y should be enabled for location and optionally Z for vertical climbs. Rotation is typically set to only the Z axis. For Bones. X and Z  with optionally Y. Rotation is usually on the Y axis. 
   **Note:** These options should match the root's final local coordinate even if the parent or armature is rotated 90 degrees.
 * **Vertical Axis**, objects will typically use +Z up in world space with the exception of cameras which have +Y up. In pose pace bones are also +Y up. Bones transforms are relative to parents and therefore have their own rotation matrices and can differ depending on rigging convention and source of armature. For example a root bone sourced from another software may be forward facing rather than vertical when imported. Used for root motion offsets.
-* **Forward Direction** , The typical facing direction for the actor. Used for root motion offsets.
+* **Forward Direction** , The typical facing direction for the actor. Used for root motion offsets. For bones the result is Bone +Y direction in World space. I.e a root bone with its tail pointing -Y in world space should be -Y, assuming this is also the characters preferred facing direction'.
+
+Common Axis Settings
+~~~~~~~~~~~~~~~~~~~~
+
+**Y Up, Y Forwards**
+
+.. image:: Yup+Zto+Y.JPG
+
+**Y Up, -Y Forwards**
+
+.. image:: Yup-Zto+Y.JPG
+
+**Z Up, Y Forwards**
+
+.. image:: Zup+Yto+Y.JPG
+
+**Z Up, -Y Forwards**
+
+.. image:: Zup-Yto+Y.JPG
+
+
 
 Create Root Bone
 ~~~~~~~~~~~~~~~~~
@@ -238,6 +261,18 @@ Evaluate Root Vectors
 
 Ensures that root keyframes are complete 3D vectors, for example a location x keyframe is always paired with location y and z keyframes. This makes root motion more deterministic and avoids undesired calculations.
 
+Normalize Quaternions
+``````````````````````
+
+*Destructive operation, making a copy is recommended*
+
+Ensures that quaternion values are limited to a range of -1.0 to +1.0 by normalizing them. While it is possible to make values excceding this range directly in an object's transform properties or in the Graph Editor,
+values beyond this range are invalid and can make transitons between actions too steep as the difference between the values is too great to interpolate smoothly. Its recommended to  only edit quaternions using the Euler interface of 3D gizmos or hotkeys.
+**Important:** Quaternion animations should be always contain all four axis WXYZ per keyframe.
+
+* **Slot** , The slot within the node assigned Action to be evaluated.
+* **Object** , The object that uses this Action that will be used to calculate new rotations.
+
 Channel Filters
 ~~~~~~~~~~~~~~~
 
@@ -290,6 +325,7 @@ Create root motion paths using a root filter group.
 * **Start Repeat** , The action's Repeat count to start the offset on.
 * **End Repeat**, The action's Repeat count to end the offset on.
 * **Target** , Optionally use a target objects coordinates for the offset location.
+* **Predict Following Target**, Rotates the Actor toward the next detected target, use the ease time to ease rotation toward the target at the end of the block.
 * **+ Rotation** , Manual rotation offset in degrees.
 * **+ Location** , Manual location offset in meters. **Note:** this may be scaled by the owner scale or parent object. Eg. And armature scaled at 0.01 xyz will make these values 0.01 smaller than world space coordinates.
 
@@ -300,6 +336,8 @@ Mix Node
 
 Tip: To layer animations, its best to leave channels free for input 2. For example, when combining walking (action1) with a head turn(action2), only have keyframes available for the neck in action1 and only have neck keyframes in action2. 
 This can be done via Action Filters. The Mix blend mode requires the most calculation and should be use sparingly to avoid slowdown.
+
+**NOTE**: Blending and mixing on the Root channels is skipped unless 'Allow Blending on Root' in enabled in Right Panel ->Node->Properties
 
 * **Modes** 
 * * **Combine**  ,Use keyframes from both inputs, input 2 will fill any missing frames from input1. . 
