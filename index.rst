@@ -16,6 +16,7 @@ Install using .zip file in Preferences-> **Extensions** ->Install from Disk. **T
 
 .. contents::
 
+
 Getting Started
 ---------------
 
@@ -104,8 +105,8 @@ Root motion is the accumulated position and rotation of an actor's root position
 * **Method**, Pose Bone animation affects root translation using the method; MIN-The lowest value is used, MAX-Highest value is used to constrain, SUM-The total of values are used to constrain Root translation.
 * **Location/Rotation**, The axis which will be used for root motion. For objects, typically X,Y should be enabled for location and optionally Z for vertical climbs. Rotation is typically set to only the Z axis. For Bones. X and Z  with optionally Y. Rotation is usually on the Y axis. 
   **Note:** These options should match the root's final local coordinate even if the parent or armature is rotated 90 degrees.
-* **Vertical Axis**, objects will typically use +Z up in world space with the exception of cameras which have +Y up. In pose pace bones are also +Y up. Bones transforms are relative to parents and therefore have their own rotation matrices and can differ depending on rigging convention and source of armature. For example a root bone sourced from another software may be forward facing rather than vertical when imported. Used for root motion offsets.
-* **Forward Direction** , The typical facing direction for the actor. Used for root motion offsets. For bones the result is Bone +Y direction in World space. I.e a root bone with its tail pointing -Y in world space should be -Y, assuming this is also the characters preferred facing direction'.
+* **Vertical Axis**, Used for root motion offsets. Mesh objects and empties will typically use +Z up in world space with the exception of cameras which have +Y up. For armatures, pose space bones are also +Y up. Bones transforms are relative to parents and therefore have their own rotation matrices and can differ depending on rigging convention and source of armature. For example a root bone sourced from another software may be forward facing rather than vertical when imported.
+* **Forward Direction** , The original facing direction for the actor, rest pose (Armatures) in world space and prior to any object rotation. Used for root motion offsets. A root bone with its tail pointing -Y in world space should be -Y, assuming this is also the characters preferred facing direction'.
 
 Common Axis Settings
 ~~~~~~~~~~~~~~~~~~~~
@@ -282,17 +283,25 @@ Allows non-destructive modifications to specified fcurve groups and transform ch
 They can also be use to offset values using addition and multiplication. Additional option are displayed for the root channel.
 
 .. image:: ActionNodeFilter.JPG
+        :scale: 70%
 
 * **Slot** , Filter groups are created per slot. Available slots are detected from the assigned action, see Action Node Advanced options for slot related properties. 
-* **Add** , Add a new filter group and assign an available fcurve group.
 * **Mode** , ie. Exclude + Head Bone will not use Head Bone animation from the node's Action.
 * * **Exclude**, Don't use checked filter groups for this block.
 * * **Include**, Only use checked filter groups for this block.
 * * **Custom**, Unchecked filter groups are excluded, all others are included including those without filters.
+* **Add** , Add a new filter group and assign an available fcurve group.
+* **Delete** , Remove the active filter group.
+* **Only Selected bones**, when enabled, only filter groups that correlate with selected pose bones are displayed.
+
   
+**Channel Offsets**
+
+.. image:: RotationOffsets.gif
+
+* **Blend Weight** , Multiply the blend strength for blending operations. Root is always zero. 
 * **Location/Rotation +** , Add offset to these channels.
 * **Location/Rotation** , Multiply(scale) the existing values on these channels.
-* **Blend Weight** , Multiply the blend strength for blending operations. Root is always zero. 
 * **Remove** , Delete filter group. Does not affect source animation.
 
 Root Offsets
@@ -302,6 +311,7 @@ Root Offsets
 Create root motion paths using a root filter group.
 
 .. image:: RootOffsets.JPG
+  :scale: 70%
 
 * **Ease Time** , number of frames to blend-in offsets. Capped at the Action duration. Original frames are removed within this range. **NOTE:** Easing does not cross over repeats.
 * **Rotate Time Bias**, within the ease time, rotations are by default half the duration. Use this property to make rotations complete sooner (-value) or later (+value), factor is between Repeat start frame and Ease Time.
